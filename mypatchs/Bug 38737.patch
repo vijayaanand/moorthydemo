@@ -1,0 +1,34 @@
+### Eclipse Workspace Patch 1.0
+#P ui
+Index: src/main/java/cl/ui/widgets/tutorable/fractions/FractionalShape.java
+===================================================================
+--- src/main/java/cl/ui/widgets/tutorable/fractions/FractionalShape.java	(revision 181913)
++++ src/main/java/cl/ui/widgets/tutorable/fractions/FractionalShape.java	(working copy)
+@@ -48,6 +48,7 @@
+ import cl.common.fractions.NumericFraction;
+ import cl.communication.AddressableNode;
+ import cl.communication.SendMessage;
++import cl.infrastructure.GuidedExampleToolManager;
+ import cl.infrastructure.Tool;
+ import cl.ui.animation.AnimationEvent;
+ import cl.ui.animation.AnimationListener;
+@@ -1428,7 +1429,10 @@
+ 		{
+ 
+ //					TutorableFractionalPart tutoredPart = (TutorableFractionalPart) tempPart;
+-					if(tutoredPart.isGuidedExample() && getTool() != null 
++// 		Bug: 38737- approved widget is no more displaying demo message until step-by-step is complete.
++			if(((GuidedExampleToolManager)getTool().getToolManager()).isGuidedExampleComplete())
++			{	
++			if(tutoredPart.isGuidedExample() && getTool() != null 
+ 							&& tutoredPart.isApproved()
+ 							&& tutoredPart.getGuidedMessage() != null){
+ 						
+@@ -1439,6 +1443,7 @@
+ 						//the above check
+ 						return;
+ 					}
++		}
+ 
+ 			// toggle the selected value...
+ 			tutoredPart.setSelected( !tutoredPart.isSelected() );

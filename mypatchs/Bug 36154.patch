@@ -1,0 +1,127 @@
+### Eclipse Workspace Patch 1.0
+#P ui
+Index: src/main/java/cl/ui/tools/diagram/TriangleRelationshipsInteractiveDiagramTool.java
+===================================================================
+--- src/main/java/cl/ui/tools/diagram/TriangleRelationshipsInteractiveDiagramTool.java	(revision 189483)
++++ src/main/java/cl/ui/tools/diagram/TriangleRelationshipsInteractiveDiagramTool.java	(working copy)
+@@ -1,5 +1,6 @@
+ package cl.ui.tools.diagram;
+ 
++import static cl.ui.tutorable.adapters.Dependencies.anyTime;
+ import info.clearthought.layout.TableLayout;
+ import info.clearthought.layout.TableLayoutConstants;
+ import info.clearthought.layout.TableLayoutConstraints;
+@@ -12,6 +13,7 @@
+ import java.util.List;
+ import java.util.Map;
+ 
++import javax.swing.AbstractButton;
+ import javax.swing.JPanel;
+ import javax.swing.JRadioButton;
+ import javax.swing.JScrollPane;
+@@ -34,6 +36,8 @@
+ import cl.ui.tools.diagram.history.DiagramHistoryEntry;
+ import cl.ui.tutorable.TutorableWidgetEvent;
+ import cl.ui.tutorable.TutorableWidgetListener;
++import cl.ui.tutorable.adapters.TutorableRadioGroup;
++import cl.ui.tutorable.adapters.TutorableToggleButtonAdapter;
+ import cl.ui.tutorable.widgets.TutorableRadioButton;
+ import cl.ui.tutorable.widgets.TutorableTextField;
+ import cl.ui.widgets.Overlay;
+@@ -71,7 +75,7 @@
+ 	private XHTMLPanel taskSpecificInstructions;
+ 	private int specificInstructionNumber;
+ 	
+-	private TutorableRadioButton calculability;
++	private TutorableRadioGroup calculability;
+ 		
+ 	//property constants
+ 	private static final String ANGLE_NAMES = "angle-names";
+@@ -222,69 +226,17 @@
+ 
+ 			((TableLayout) radioButtonPanel.getLayout()).setHGap(5);
+ 			((TableLayout) radioButtonPanel.getLayout()).setVGap(10);
+-
+-            calculability = new TutorableRadioButton(new String[]{"", ""}, new String[]{"can calc", "cannot calc"}) {
+-				private static final long serialVersionUID = 1L;
+-
+-				@Override
+-                public Component getJITNotification()
+-                {
+-                    return getSelected();
+-                }
+-                
+-                @Override
+-        	    protected void addOverlaidBorder()
+-                {
+-        	        overlaidBorderComponent.setBuddy(getSelected());
+-                    overlaidBorderComponent.setBorder(overlayBorder);
+-        	        OverlayUtils.install(overlaidBorderComponent);
+-        	    }
+-                
+-                /**
+-                 * {@inheritDoc}
+-                 */
+-                @Override
+-                public Overlay getApprovalNotification()
+-                {
+-                    return null;
+-                }
+-
+-            };
+-			calculability.setName("final-answer-calculability");
++			
++			calculability=new TutorableRadioGroup.Builder().withMessagingName("final-answer-calculability").withTexts(Arrays.asList("","")).withActionCommands(Arrays.asList("can calc", "cannot calc")).build();
+ 			addChild(calculability);
+-			calculability.setSplitDisplay(true);
++			anyTime(calculability).isApproved().disable(calculability);
+ 
+-			final JRadioButton[] calculabilityRadioButtons = calculability.getRadioButtons();			
+-				
+-			this.addAncestorListener(new AncestorListener()
+-			{
+-				@Override
+-				public void ancestorAdded(AncestorEvent event)
+-				{
+-					if(isGuidedExampleTool())
+-					{
+-						if(calculability.isFlagged())
+-						{	
+-							for(int i = 0; i< calculabilityRadioButtons.length; i++)
+-							{
+-								if(calculabilityRadioButtons[i].isSelected())
+-								{	
+-									calculability.reset();
+-									GuidedExampleUtils.showDemoMessagesIfPossible(
+-										calculability, false, false);																
+-									calculabilityRadioButtons[i].doClick();									
+-									break;
+-								}
+-							}								
+-						}	
+-					}
+-				}
+-				@Override
+-				public void ancestorMoved(AncestorEvent event) {}
+-				@Override
+-				public void ancestorRemoved(AncestorEvent event) {}
+-			});
+-
++			final JRadioButton[] calculabilityRadioButtons = new JRadioButton[calculability.getComponents().length];			
++			int adapteeNumber=0;
++			for (TutorableToggleButtonAdapter<JRadioButton> adapter : calculability.getAdaptee()) {				
++		    calculabilityRadioButtons[adapteeNumber]=adapter.getAdaptee();
++		    adapteeNumber++;
++			}
+ 			radioButtonPanel.add(calculabilityRadioButtons[0], new TableLayoutConstraints(0, 0));
+ 			radioButtonPanel.add(calculabilityRadioButtons[1], new TableLayoutConstraints(0, 2));
+ 
+@@ -299,7 +251,7 @@
+ 				@Override
+ 				public void tutorEventOccurred(TutorableWidgetEvent e) {
+ 					if(e.getType() == TutorableWidgetEvent.APPROVE){
+-						calculability.getRadioButtons()[0].doClick();
++						((JRadioButton) calculability.getComponents()[0]).doClick();
+ 					}
+ 				}
+ 			});

@@ -1,0 +1,51 @@
+### Eclipse Workspace Patch 1.0
+#P ui
+Index: src/main/java/cl/ui/tools/tutorable/FunctionTransformationTool.java
+===================================================================
+--- src/main/java/cl/ui/tools/tutorable/FunctionTransformationTool.java	(revision 191895)
++++ src/main/java/cl/ui/tools/tutorable/FunctionTransformationTool.java	(working copy)
+@@ -25,6 +25,7 @@
+ import java.awt.Component;
+ import java.awt.Container;
+ import java.awt.Dimension;
++import java.awt.FlowLayout;
+ import java.awt.Font;
+ import java.awt.Image;
+ import java.awt.Shape;
+@@ -155,6 +156,7 @@
+ 	
+ 	// Matching Transformation panel widgets
+ 	private JPanel matchingTransformationPanel;
++	private JPanel basicForm;
+ 	private AlgebraicTextField algTextField;		// specialized textfield to parse algebraic info (see inner class)
+ 	private GraphicalWidget graphicalWidget;		// conglomerated graphical widget (see inner class)
+ 	private JButton resetButton;					// button to reset algTextField to previous good state
+@@ -521,6 +523,8 @@
+ 	private JPanel buildMatchingTransformationsPanel()
+ 	{
+ 		matchingTransformationPanel = new JPanel();
++		basicForm=new JPanel();
++		basicForm.setLayout(new FlowLayout(FlowLayout.LEFT));
+ 
+ 		double[] columnWidths = new double[]{0.1, TableLayoutConstants.PREFERRED, TableLayoutConstants.PREFERRED, TableLayoutConstants.FILL};
+ 		double[] rowHeights = new double[]{TableLayoutConstants.PREFERRED, TableLayoutConstants.PREFERRED, TableLayoutConstants.PREFERRED, TableLayoutConstants.PREFERRED};
+@@ -549,6 +553,10 @@
+ 		
+ 		matchingTransformationPanel.add(tempPanel, "2,1,3,1");
+ 		
++		basicForm.add(XHTMLPanelUtils.createOneLiner("<b>Basic Form: <expression>g(x) = " + generalForm + "</expression></b>"));
++		matchingTransformationPanel.add(basicForm, "3,2,f,c");
++		basicForm.setVisible(false);
++		
+ 		checkTransWidget = new CheckTransformationWidget();		
+ 		checkTransWidget.setEnabled(false);
+ 		
+@@ -673,7 +681,7 @@
+ 	}
+ 	
+ 	private void doEnableMatchingTransformationsPanel() {
+-		matchingTransformationPanel.add(XHTMLPanelUtils.createOneLiner("<b>Basic Form: <expression>g(x) = " + generalForm + "</expression></b>"), "3,2,f,c");
++		basicForm.setVisible(true);
+ 	}
+ 	
+ 	/* Update the history panel with information on the most recent transformation. */ 

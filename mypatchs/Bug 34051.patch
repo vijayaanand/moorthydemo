@@ -1,0 +1,16 @@
+### Eclipse Workspace Patch 1.0
+#P ui
+Index: src/main/java/cl/ui/tools/tutorable/FunctionTransformationTool.java
+===================================================================
+--- src/main/java/cl/ui/tools/tutorable/FunctionTransformationTool.java	(revision 183114)
++++ src/main/java/cl/ui/tools/tutorable/FunctionTransformationTool.java	(working copy)
+@@ -1840,7 +1840,8 @@
+ 			
+ 			super.setEnabled(enable);
+ 			
+-			graphicalCombo.setEnabled(enable);			
++			graphicalCombo.setEnabled(enable);
++			graphicalCombo.setFocusable(enable);
+ 			qualifierField.setEnabled(enable);
+ 			
+ 			if(enable) {

@@ -1,0 +1,98 @@
+### Eclipse Workspace Patch 1.0
+#P runtime
+Index: ui/src/main/java/cl/ui/tools/tutorable/SquareRootsTool.java
+===================================================================
+--- ui/src/main/java/cl/ui/tools/tutorable/SquareRootsTool.java	(revision 183114)
++++ ui/src/main/java/cl/ui/tools/tutorable/SquareRootsTool.java	(working copy)
+@@ -51,6 +51,7 @@
+ import cl.ui.tutorable.widgets.TutorableComboBox;
+ import cl.ui.tutorable.widgets.TutorableRadioButton;
+ import cl.ui.tutorable.widgets.TutorableTextField;
++import cl.ui.utilities.UIUtilities;
+ import cl.ui.webeq.WebEQComponent;
+ import cl.ui.webeq.WebEqHelper;
+ import cl.ui.widgets.FixedHeightPanel;
+@@ -100,6 +101,7 @@
+ 	private XHTMLPanel labelPositiveRoot;
+ 	private XHTMLPanel labelNegativeRoot;
+ 	private String units;
++	private String areaModelLabel;
+ 	private String[] radioButtonChoices;
+ 	private String[] approxPSqrt;
+ 	private String[] approxNSqrt;	
+@@ -223,6 +225,11 @@
+ 		
+ 		previouslySubmittedValue = Integer.valueOf(0);
+ 		
++		if(props.containsKey( PropertyConstants.AREA_MODEL_LABEL))
++		{
++			areaModelLabel = props.getStr(PropertyConstants.AREA_MODEL_LABEL);
++		}
++		
+ 		if( props.containsKey( PropertyConstants.UNITS ) )
+ 		{
+ 			units = (String)props.get(PropertyConstants.UNITS);
+@@ -2005,7 +2012,7 @@
+ 				int totalArea = numberLineVert.getSelection().intValue() * numberLineVert.getSelection().intValue();
+ 
+ 				StringBuffer areaLabelBuffer = new StringBuffer();
+-				areaLabelBuffer.append(UIStrings.getFormattedString(UIStrings.AREA_SQUARED, totalArea, (totalArea == 1) ? unitsSingular : units));
++				areaLabelBuffer.append(UIUtilities.getFormattedString(areaModelLabel, totalArea, (totalArea == 1) ? unitsSingular : units));
+ 
+ 				if( numberLineHoriz.getSelection().intValue() == 0 )
+ 					twoDimFraction.setPaintAreaLabel( false );
+@@ -2045,7 +2052,7 @@
+ 			}
+ 
+ 			StringBuffer areaLabelBuffer = new StringBuffer();
+-			areaLabelBuffer.append(UIStrings.getFormattedString(UIStrings.AREA_SQUARED, totalArea, (totalArea == 1) ? unitsSingular : units));
++			areaLabelBuffer.append(UIUtilities.getFormattedString(areaModelLabel, totalArea, (totalArea == 1) ? unitsSingular : units));
+ 
+ 			twoDimFraction.setAreaLabel( areaLabelBuffer.toString() );
+ 			twoDimFraction.setPaintAreaLabel( true );
+@@ -2136,7 +2143,7 @@
+ 			{
+ 				int totalArea = tutorValue * tutorValue;
+ 				StringBuffer areaLabelBuffer = new StringBuffer();
+-				areaLabelBuffer.append(UIStrings.getFormattedString(UIStrings.AREA_SQUARED, totalArea, (totalArea == 1) ? unitsSingular : units));
++				areaLabelBuffer.append(UIUtilities.getFormattedString(areaModelLabel, totalArea, (totalArea == 1) ? unitsSingular : units));
+ 
+ 				if( tutorValue == 0 )
+ 					twoDimFraction.setPaintAreaLabel( false );
+Index: ui-utilities/src/main/java/cl/ui/utilities/UIUtilities.java
+===================================================================
+--- ui-utilities/src/main/java/cl/ui/utilities/UIUtilities.java	(revision 183114)
++++ ui-utilities/src/main/java/cl/ui/utilities/UIUtilities.java	(working copy)
+@@ -9,6 +9,7 @@
+ import java.io.BufferedReader;
+ import java.io.FileReader;
+ import java.math.BigDecimal;
++import java.text.MessageFormat;
+ import java.util.Arrays;
+ import java.util.Comparator;
+ import java.util.List;
+@@ -239,4 +240,11 @@
+ 		
+ 		return (comp == focusOwner || comp.isAncestorOf(focusOwner));
+ 	}
++	
++	public static String getFormattedString(String label, Object... values)
++	{
++		MessageFormat format = new MessageFormat( label );
++		return format.format( values );
++	}
++	
+ }
+#P dataobjs
+Index: src/main/java/cl/common/PropertyConstants.java
+===================================================================
+--- src/main/java/cl/common/PropertyConstants.java	(revision 183114)
++++ src/main/java/cl/common/PropertyConstants.java	(working copy)
+@@ -231,6 +231,7 @@
+ 	public static final String XUNITS = "xunits";
+ 	public static final String YUNITS = "yunits";	
+ 	public static final String UNITS_SINGULAR = "SingularUnits";
++	public static final String AREA_MODEL_LABEL="area_model_label";
+ 	public static final String IMAGE = "image";
+ 	
+ 

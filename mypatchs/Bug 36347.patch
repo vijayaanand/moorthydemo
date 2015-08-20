@@ -1,0 +1,15 @@
+### Eclipse Workspace Patch 1.0
+#P runtime
+Index: ui/src/main/java/cl/ui/modules/solver/SolverToolProblem.java
+===================================================================
+--- ui/src/main/java/cl/ui/modules/solver/SolverToolProblem.java	(revision 190638)
++++ ui/src/main/java/cl/ui/modules/solver/SolverToolProblem.java	(working copy)
+@@ -1058,7 +1058,7 @@
+ 	@Override
+     public void jitMessage( CL_TutorMessage[] messageList, int startMsgIndex )
+ 	{
+-		getParentTool().getToolManager().showHintMessages(null, messageList, startMsgIndex );
++		getParentTool().getToolManager().showJitMessages(getParentTool(), messageList, startMsgIndex, null, false);
+ 	}
+ 
+ 	/*

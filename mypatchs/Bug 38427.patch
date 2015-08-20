@@ -1,0 +1,31 @@
+### Eclipse Workspace Patch 1.0
+#P ui
+Index: src/main/java/cl/ui/tools/tutorable/lcmgcf/LCMOptionalTool.java
+===================================================================
+--- src/main/java/cl/ui/tools/tutorable/lcmgcf/LCMOptionalTool.java	(revision 183114)
++++ src/main/java/cl/ui/tools/tutorable/lcmgcf/LCMOptionalTool.java	(working copy)
+@@ -465,8 +465,10 @@
+ 				for(TutorableTextField multiple : multiplesOfSecondNumber){
+ 					if(! multiple.isApproved()) return;
+ 				}
+-				
+-				mappingWidget.setEnabled(true);
++			    
++				// if true, node connection is not complete, if false, otherwise
++				if(mappingPanel.isEnabled())				
++					mappingWidget.setEnabled(true);
+ 					
+ 				mappingWidgetInstructions.setText(ScenarioUtils.asClass("instruction", updatedMappingWidgetInstructions));
+ 			}
+@@ -485,7 +487,10 @@
+ 			public void run() {
+ 				mappingPanel.setBorderColor(Settings.getColor(ColorSettings.BTA_WORK_AREA_BORDER));
+ 				mappingPanel.setBorderThickness(1);
+-				
++		// Bug 38427: panel enabled property is set as false. it means, node connection is completed. 
++		// this will block to enable mapping widget after completion of problem tool
++				mappingPanel.setEnabled(false);
++				mappingWidget.setEnabled(false);
+ 				mappingPanel.repaint();
+ 			}
+ 		};

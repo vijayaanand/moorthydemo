@@ -1,0 +1,44 @@
+### Eclipse Workspace Patch 1.0
+#P qa
+Index: src/main/java/cl/utilities/problemtester2/CurriculumViewer.java
+===================================================================
+--- src/main/java/cl/utilities/problemtester2/CurriculumViewer.java	(revision 195376)
++++ src/main/java/cl/utilities/problemtester2/CurriculumViewer.java	(working copy)
+@@ -49,15 +49,34 @@
+             } else if ("add-N-from-section".equals(getName())) {
+                 System.out.println(getName());
+             } else if ("add-all-from-section".equals(getName())) {
+-                System.out.println(getName());
++				List<TreePath> problems = new ArrayList<TreePath>();
++				for (Object selection : sectionViewer.getSelectedValues()) {
++					problems.addAll(model.getProblems((TreePath) selection));
++				}								
++				fireTreeSelectionEvent(problems.toArray(new TreePath[problems.size()]));
++				
+             } else if ("add-N-from-unit".equals(getName())) {
+                 System.out.println(getName());
+             } else if ("add-all-from-unit".equals(getName())) {
+-                System.out.println(getName());
++            	List<TreePath> problems = new ArrayList<TreePath>();
++				for (Object unit : unitViewer.getSelectedValues()) {
++					for (Object section : model.getSections((TreePath) unit)) {
++						problems.addAll(model.getProblems((TreePath) section));					
++					}					
++				}
++				fireTreeSelectionEvent(problems.toArray(new TreePath[problems.size()]));				
+             } else if ("add-N-from-curriculum".equals(getName())) {
+                 System.out.println(getName());
+             } else if ("add-all-from-curriculum".equals(getName())) {
+-                System.out.println(getName());
++            	List<TreePath> problems = new ArrayList<TreePath>();
++            	for (Object curriculalum : curriculaViewer.getSelectedValues()) {
++            		for (Object unit : model.getUnits((TreePath) curriculalum)) {
++            			for (Object section : model.getSections((TreePath) unit)) {
++            				problems.addAll(model.getProblems((TreePath) section));					
++            			}					
++            		}
++            	}
++				fireTreeSelectionEvent(problems.toArray(new TreePath[problems.size()]));
+             } else if ("add-N-from-all-curricula".equals(getName())) {
+                 System.out.println(getName());
+             } else if ("add-all-curricula".equals(getName())) {
